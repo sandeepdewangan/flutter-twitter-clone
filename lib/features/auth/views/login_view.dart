@@ -1,20 +1,21 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/commons/small_rounded_button.dart';
 import 'package:twitter_clone/constants/ui_constants.dart';
 import 'package:twitter_clone/features/auth/views/register_view.dart';
 import 'package:twitter_clone/features/auth/widgets/auth_form_field.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
-class LoginView extends StatefulWidget {
+class LoginView extends ConsumerStatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => const LoginView());
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
   // doesnot build everytime
   final appbar = UiConstants.twitterAppbar;
   final _formKey = GlobalKey<FormState>();
@@ -58,6 +59,7 @@ class _LoginViewState extends State<LoginView> {
                           label: "Done",
                           textColor: Colors.black87,
                           bgColor: Colors.white,
+                          onTap: () {},
                         ),
                       ),
                       const SizedBox(height: 25),
