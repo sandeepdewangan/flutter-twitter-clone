@@ -2,24 +2,26 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/commons/small_rounded_button.dart';
 import 'package:twitter_clone/constants/ui_constants.dart';
-import 'package:twitter_clone/features/auth/views/register_view.dart';
+import 'package:twitter_clone/features/auth/views/login_view.dart';
 import 'package:twitter_clone/features/auth/widgets/auth_form_field.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
-class LoginView extends StatefulWidget {
-  static route() => MaterialPageRoute(builder: (context) => const LoginView());
-  const LoginView({super.key});
+class RegisterView extends StatefulWidget {
+  static route() =>
+      MaterialPageRoute(builder: (context) => const RegisterView());
+  const RegisterView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _RegisterViewState extends State<RegisterView> {
   // doesnot build everytime
   final appbar = UiConstants.twitterAppbar;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -51,6 +53,11 @@ class _LoginViewState extends State<LoginView> {
                         controller: passwordController,
                         hintText: "Enter password",
                       ),
+                      const SizedBox(height: 20),
+                      AuthTextField(
+                        controller: confirmPasswordController,
+                        hintText: "Confirm password",
+                      ),
                       const SizedBox(height: 25),
                       Align(
                         alignment: Alignment.topRight,
@@ -63,11 +70,11 @@ class _LoginViewState extends State<LoginView> {
                       const SizedBox(height: 25),
                       RichText(
                         text: TextSpan(
-                          text: 'Don\'t have account? ',
+                          text: 'Already have account? ',
                           style: TextStyle(fontSize: 16),
                           children: [
                             TextSpan(
-                              text: 'Register',
+                              text: 'Login',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Pallete.blueColor,
@@ -77,7 +84,7 @@ class _LoginViewState extends State<LoginView> {
                                     ..onTap = () {
                                       Navigator.push(
                                         context,
-                                        RegisterView.route(),
+                                        LoginView.route(),
                                       );
                                     },
                             ),
