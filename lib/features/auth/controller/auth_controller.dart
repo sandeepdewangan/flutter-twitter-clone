@@ -28,4 +28,20 @@ class AuthController extends StateNotifier<bool> {
       (user) => print(user.email),
     );
   }
+
+  void login({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    state = true;
+    final res = await authAPI.login(email: email, password: password);
+
+    state = false;
+    // handle failure and success
+    res.fold(
+      (failure) => showSnackbar(context, failure.message),
+      (user) => print(user.userId),
+    );
+  }
 }

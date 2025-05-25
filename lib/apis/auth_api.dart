@@ -16,7 +16,7 @@ class AuthAPI {
   final Account account;
   AuthAPI({required this.account});
 
-  // Login
+  // Register
   Future<Either<Failure, User>> register({
     required email,
     required password,
@@ -28,6 +28,29 @@ class AuthAPI {
         password: password,
       );
       return right(user);
+    } on AppwriteException catch (e, stackTrace) {
+      return left(
+        Failure(
+          e.message ?? 'Some unexpected error occured at Appwrite',
+          stackTrace,
+        ),
+      );
+    } catch (e, stackTrace) {
+      return left(Failure(e.toString(), stackTrace));
+    }
+  }
+
+  // Login
+  Future<Either<Failure, Session>> login({
+    required email,
+    required password,
+  }) async {
+    try {
+      final session = await account.createEmailPasswordSession(
+        email: email,
+        password: password,
+      );
+      return right(session);
     } on AppwriteException catch (e, stackTrace) {
       return left(
         Failure(
