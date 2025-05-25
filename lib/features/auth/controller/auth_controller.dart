@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/apis/auth_api.dart';
 import 'package:twitter_clone/core/utils.dart';
+import 'package:twitter_clone/features/auth/views/login_view.dart';
+import 'package:twitter_clone/features/home/views/home_view.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>((
   ref,
@@ -23,10 +25,10 @@ class AuthController extends StateNotifier<bool> {
 
     state = false;
     // handle failure and success
-    res.fold(
-      (failure) => showSnackbar(context, failure.message),
-      (user) => print(user.email),
-    );
+    res.fold((failure) => showSnackbar(context, failure.message), (user) {
+      showSnackbar(context, "Account is created successfully");
+      Navigator.push(context, LoginView.route());
+    });
   }
 
   void login({
@@ -41,7 +43,7 @@ class AuthController extends StateNotifier<bool> {
     // handle failure and success
     res.fold(
       (failure) => showSnackbar(context, failure.message),
-      (user) => print(user.userId),
+      (user) => Navigator.push(context, HomeView.route()),
     );
   }
 }
