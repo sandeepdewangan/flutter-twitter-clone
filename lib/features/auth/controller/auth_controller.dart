@@ -1,3 +1,4 @@
+import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/apis/auth_api.dart';
@@ -11,9 +12,20 @@ final authControllerProvider = StateNotifierProvider<AuthController, bool>((
   return AuthController(authAPI: ref.watch(authAPIProvider));
 });
 
+// Future provider for current user account
+// FutureBuilder, when() provides with three main properties, data, error and loading.
+final currentUserAccountProvider = FutureProvider((ref) {
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.getCurrentUser();
+});
+
 class AuthController extends StateNotifier<bool> {
   final AuthAPI authAPI;
   AuthController({required this.authAPI}) : super(false);
+
+  Future<User?> getCurrentUser() {
+    return authAPI.currentUserAccount();
+  }
 
   void register({
     required String email,

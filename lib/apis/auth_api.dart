@@ -16,6 +16,15 @@ class AuthAPI {
   final Account account;
   AuthAPI({required this.account});
 
+  // Get current logged in user
+  Future<User?> currentUserAccount() async {
+    try {
+      return await account.get();
+    } catch (e) {
+      return null;
+    }
+  }
+
   // Register
   Future<Either<Failure, User>> register({
     required email,
