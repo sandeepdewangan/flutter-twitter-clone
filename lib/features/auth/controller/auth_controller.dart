@@ -2,14 +2,19 @@ import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/apis/auth_api.dart';
+import 'package:twitter_clone/apis/user_api.dart';
 import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/views/login_view.dart';
 import 'package:twitter_clone/features/home/views/home_view.dart';
+import 'package:twitter_clone/models/user_model.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>((
   ref,
 ) {
-  return AuthController(authAPI: ref.watch(authAPIProvider));
+  return AuthController(
+    authAPI: ref.watch(authAPIProvider),
+    userAPI: ref.watch(userAPIProvider),
+  );
 });
 
 // Future provider for current user account
@@ -21,11 +26,16 @@ final currentUserAccountProvider = FutureProvider((ref) {
 
 class AuthController extends StateNotifier<bool> {
   final AuthAPI authAPI;
-  AuthController({required this.authAPI}) : super(false);
+  final UserAPI userAPI;
+  AuthController({required this.authAPI, required this.userAPI}) : super(false);
+
+  // --------- Get Current User ---------
 
   Future<User?> getCurrentUser() {
     return authAPI.currentUserAccount();
   }
+
+  // --------- Register New User ---------
 
   void register({
     required String email,
@@ -35,13 +45,32 @@ class AuthController extends StateNotifier<bool> {
     state = true;
     final res = await authAPI.register(email: email, password: password);
 
-    state = false;
     // handle failure and success
-    res.fold((failure) => showSnackbar(context, failure.message), (user) {
-      showSnackbar(context, "Account is created successfully");
-      Navigator.push(context, LoginView.route());
+    res.fold((failure) => showSnackbar(context, failure.message), (user) async {
+      // success
+      UserModel userModel = UserModel(
+        email: email,
+        name: '',
+        followers: const [],
+        following: const [],
+        profilePic: '',
+        bannerPic: '',
+        uid: user.$id,
+        bio: '',
+        isTwitterBlue: false,
+      );
+      final res = await userAPI.saveUserData(userModel);
+
+      res.fold((f) => showSnackbar(context, f.message), (s) {
+        showSnackbar(context, "Account created successfully");
+        Navigator.push(context, LoginView.route());
+      });
     });
+
+    state = false;
   }
+
+  // --------- Login ---------
 
   void login({
     required String email,
