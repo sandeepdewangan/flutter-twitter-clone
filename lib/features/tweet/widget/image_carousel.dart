@@ -23,7 +23,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                   child: Image.network(link, fit: BoxFit.contain),
                 );
               }).toList(),
-          options: CarouselOptions(height: 200, enableInfiniteScroll: false),
+          options: CarouselOptions(enableInfiniteScroll: false, padEnds: false),
         ),
       ],
     );

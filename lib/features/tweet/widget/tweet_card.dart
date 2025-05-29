@@ -57,6 +57,7 @@ class TweetCard extends ConsumerWidget {
                           // Tweets icon buttons
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
+                            spacing: 20,
                             children: [
                               // Views
                               TweetActionsButtons(
