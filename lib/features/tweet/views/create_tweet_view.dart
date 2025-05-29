@@ -32,6 +32,10 @@ class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
   }
 
   void onShareTweet() async {
+    if (textTweetController.text.isEmpty) {
+      return;
+    }
+
     ref
         .watch(tweetControllerProvider.notifier)
         .shareTweet(
@@ -60,13 +64,16 @@ class _CreateTweetViewState extends ConsumerState<CreateTweetView> {
           icon: Icon(Icons.close),
         ),
         actions: [
-          MaterialButton(
+          OutlinedButton(
             onPressed: onShareTweet,
-            color: Pallete.blueColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+            child: Text(
+              "Tweet",
+              style: TextStyle(
+                fontSize: 18,
+                color: Pallete.blueColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            child: Text("Tweet", style: TextStyle(fontSize: 18)),
           ),
         ],
       ),

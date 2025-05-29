@@ -7,6 +7,7 @@ import 'package:twitter_clone/apis/tweet_api.dart';
 import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
+import 'package:twitter_clone/models/user_model.dart';
 
 final tweetControllerProvider = StateNotifierProvider<TweetController, bool>((
   ref,
@@ -69,7 +70,9 @@ class TweetController extends StateNotifier<bool> {
 
     final res = await tweetAPI.tweet(tweet);
     state = false;
-    res.fold((f) => showSnackbar(context, f.message), (doc) => print(doc));
+    res.fold((f) => showSnackbar(context, f.message), (doc) {
+      // do nothing
+    });
   }
 
   // Extract urls from the given tweet
@@ -96,7 +99,21 @@ class TweetController extends StateNotifier<bool> {
 
   Future<List<TweetModel>> getTweets() async {
     final tweets = await tweetAPI.fetchTweets();
-    print(tweets[0].data);
     return tweets.map((tweet) => TweetModel.fromMap(tweet.data)).toList();
+  }
+
+  likeTweet(TweetModel tweet, UserModel user) async {
+    List<String> likes = tweet.likes;
+    // If already liked by the user, then remove
+    if (tweet.likes.contains(user.uid)) {
+      likes.remove(user.uid);
+    } else {
+      likes.add(user.uid);
+    }
+    // update the tweet with updated liked
+    tweet = tweet.copyWith(likes: likes);
+
+    final res = await tweetAPI.likeTweet(tweet);
+    res.fold((_) => null, (_) => null);
   }
 }

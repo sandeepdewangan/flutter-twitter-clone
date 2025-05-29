@@ -56,4 +56,26 @@ class TweetAPI {
       'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.tweetsCollectionId}.documents',
     ]).stream;
   }
+
+  Future<Either<Failure, Document>> likeTweet(TweetModel tweet) async {
+    try {
+      final document = await db.updateDocument(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: AppwriteConstants.tweetsCollectionId,
+        documentId: tweet.id,
+        data: {"likes": tweet.likes},
+      );
+
+      return right(document);
+    } on AppwriteException catch (e, stackTrace) {
+      return left(
+        Failure(
+          e.message ?? 'Some unexpected error occured at Appwrite',
+          stackTrace,
+        ),
+      );
+    } catch (e, stackTrace) {
+      return left(Failure(e.toString(), stackTrace));
+    }
+  }
 }

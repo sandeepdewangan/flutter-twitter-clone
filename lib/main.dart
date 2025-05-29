@@ -8,6 +8,11 @@ import 'package:twitter_clone/features/home/views/home_view.dart';
 import 'package:twitter_clone/theme/app_theme.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // This will solve the problem of image re-loading when we scroll through, in the Home page.
+  PaintingBinding.instance.imageCache.maximumSizeBytes =
+      1024 * 1024 * 300; // 300 MB
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

@@ -5,6 +5,7 @@ import 'package:twitter_clone/commons/loading.dart';
 import 'package:twitter_clone/constants/assets_constants.dart';
 import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
+import 'package:twitter_clone/features/tweet/controller/tweet_controller.dart';
 import 'package:twitter_clone/features/tweet/widget/image_carousel.dart';
 import 'package:twitter_clone/features/tweet/widget/tweet_actions_buttons.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
@@ -16,92 +17,104 @@ class TweetCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref
-        .watch(userDetailsProvider(tweet.uid))
-        .when(
-          data: (user) {
-            return Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
+    final currentUser = ref.watch(currentUserDetailsProvider).value;
+    return currentUser == null
+        ? const Loading()
+        : ref
+            .watch(userDetailsProvider(tweet.uid))
+            .when(
+              data: (user) {
+                return Column(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(user.profilePic),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(user.profilePic),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                user.name,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                ' • ${formatDateTimeToTimeAgo(msEpoch: tweet.tweetedAt)}',
-                                style: TextStyle(color: Pallete.greyColor),
-                              ),
-                            ],
-                          ),
-                          // Tweet display
-                          highlightLinksAndHashtags(tweet.tweet),
-                          // Display tweet images
-                          if (tweet.images.isNotEmpty)
-                            ImageCarousel(imageLinks: tweet.images),
-
-                          // Tweets icon buttons
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            spacing: 20,
-                            children: [
-                              // Views
-                              TweetActionsButtons(
-                                onTab: () {},
-                                value: 0,
-                                assetName: AssetsConstants.viewsIcon,
-                              ),
-                              // Comments
-                              TweetActionsButtons(
-                                onTab: () {},
-                                value: 0,
-                                assetName: AssetsConstants.commentIcon,
-                              ),
-                              // Like
-                              TweetActionsButtons(
-                                onTab: () {},
-                                value: 0,
-                                assetName: AssetsConstants.likeOutlinedIcon,
-                              ),
-                              // Re-tweet
-                              IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset(
-                                  AssetsConstants.retweetIcon,
-                                  colorFilter: ColorFilter.mode(
-                                    Pallete.greyColor,
-                                    BlendMode.srcIn,
+                              Row(
+                                children: [
+                                  Text(
+                                    user.name,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
+                                  Text(
+                                    ' • ${formatDateTimeToTimeAgo(msEpoch: tweet.tweetedAt)}',
+                                    style: TextStyle(color: Pallete.greyColor),
+                                  ),
+                                ],
+                              ),
+                              // Tweet display
+                              highlightLinksAndHashtags(tweet.tweet),
+                              // Display tweet images
+                              if (tweet.images.isNotEmpty)
+                                ImageCarousel(imageLinks: tweet.images),
+
+                              // Tweets icon buttons
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                spacing: 20,
+                                children: [
+                                  // Views
+                                  TweetActionsButtons(
+                                    onTab: () {},
+                                    value: 0,
+                                    assetName: AssetsConstants.viewsIcon,
+                                  ),
+                                  // Comments
+                                  TweetActionsButtons(
+                                    onTab: () {},
+                                    value: 0,
+                                    assetName: AssetsConstants.commentIcon,
+                                  ),
+                                  // Like
+                                  TweetActionsButtons(
+                                    onTab: () {
+                                      ref
+                                          .watch(
+                                            tweetControllerProvider.notifier,
+                                          )
+                                          .likeTweet(tweet, currentUser);
+                                    },
+                                    value: tweet.likes.length,
+                                    assetName: AssetsConstants.likeOutlinedIcon,
+                                    isLiked: tweet.likes.contains(
+                                      currentUser.uid,
+                                    ),
+                                  ),
+                                  // Re-tweet
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: SvgPicture.asset(
+                                      AssetsConstants.retweetIcon,
+                                      colorFilter: ColorFilter.mode(
+                                        Pallete.greyColor,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                    // const SizedBox(height: 5),
+                    Divider(color: Pallete.greyColor, thickness: 0.1),
                   ],
-                ),
-                // const SizedBox(height: 5),
-                Divider(color: Pallete.greyColor, thickness: 0.1),
-              ],
+                );
+              },
+              error: (error, st) => Text(error.toString()),
+              loading: () => const Loading(),
             );
-          },
-          error: (error, st) => Text(error.toString()),
-          loading: () => const Loading(),
-        );
   }
 }
