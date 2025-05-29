@@ -55,7 +55,6 @@ class TweetModel {
   }
 
   Map<String, dynamic> toMap() {
-    print(tweetedAt);
     return <String, dynamic>{
       'tweet': tweet,
       'hashtags': hashtags,
@@ -72,17 +71,17 @@ class TweetModel {
 
   factory TweetModel.fromMap(Map<String, dynamic> map) {
     return TweetModel(
-      tweet: map['tweet'] as String,
+      tweet: map['tweet'] ?? '',
       hashtags: List<String>.from(map['hashtags']),
       links: List<String>.from(map['links']),
       images: List<String>.from(map['images']),
-      uid: map['uid'] as String,
+      uid: map['uid'],
 
       tweetedAt: map['tweetedAt'],
       likes: List<String>.from(map['likes']),
       commentIds: List<String>.from(map['commentIds']),
-      id: map['id'] as String,
-      reshareCount: map['reshareCount'] as int,
+      id: map['\$id'],
+      reshareCount: map['reshareCount'],
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:twitter_clone/constants/constants.dart';
 import 'package:twitter_clone/constants/ui_constants.dart';
 import 'package:twitter_clone/features/tweet/views/create_tweet_view.dart';
+import 'package:twitter_clone/features/tweet/widget/tweet_list.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
 class HomeView extends StatefulWidget {
@@ -32,8 +33,11 @@ class _HomeViewState extends State<HomeView> {
       body: IndexedStack(
         index: page,
         children: [
-          Text("Home Page"),
+          // Home Page
+          TweetList(),
+          // Search Page
           Text("Search Page"),
+          // Notification Page
           Text("Notification Page"),
         ],
       ),

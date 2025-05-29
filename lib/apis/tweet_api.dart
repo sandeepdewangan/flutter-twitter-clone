@@ -37,4 +37,12 @@ class TweetAPI {
       return left(Failure(e.toString(), stackTrace));
     }
   }
+
+  Future<List<Document>> fetchTweets() async {
+    final res = await db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.tweetsCollectionId,
+    );
+    return res.documents;
+  }
 }

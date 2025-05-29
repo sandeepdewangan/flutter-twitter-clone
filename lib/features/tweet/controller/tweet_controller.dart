@@ -18,6 +18,10 @@ final tweetControllerProvider = StateNotifierProvider<TweetController, bool>((
   );
 });
 
+final getTweetsProvider = FutureProvider((ref) {
+  return ref.watch(tweetControllerProvider.notifier).getTweets();
+});
+
 class TweetController extends StateNotifier<bool> {
   final Ref ref;
   final TweetAPI tweetAPI;
@@ -84,5 +88,11 @@ class TweetController extends StateNotifier<bool> {
         .allMatches(input)
         .map((match) => match.group(0)!)
         .toList();
+  }
+
+  Future<List<TweetModel>> getTweets() async {
+    final tweets = await tweetAPI.fetchTweets();
+    print(tweets[0].data);
+    return tweets.map((tweet) => TweetModel.fromMap(tweet.data)).toList();
   }
 }
