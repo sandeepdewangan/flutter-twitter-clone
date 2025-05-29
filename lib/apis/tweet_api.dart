@@ -8,12 +8,16 @@ import 'package:twitter_clone/core/providers.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 
 final tweetAPIProvider = Provider((ref) {
-  return TweetAPI(db: ref.watch(appwriteDatabaseProvider));
+  return TweetAPI(
+    db: ref.watch(appwriteDatabaseProvider),
+    realtime: ref.watch(appwriteRealtimeProvider),
+  );
 });
 
 class TweetAPI {
   final Databases db;
-  TweetAPI({required this.db});
+  final Realtime realtime;
+  TweetAPI({required this.db, required this.realtime});
 
   // Save User Data to DB
   Future<Either<Failure, Document>> tweet(TweetModel tweet) async {
@@ -42,7 +46,14 @@ class TweetAPI {
     final res = await db.listDocuments(
       databaseId: AppwriteConstants.databaseId,
       collectionId: AppwriteConstants.tweetsCollectionId,
+      queries: [Query.orderDesc('tweetedAt')],
     );
     return res.documents;
+  }
+
+  Stream<RealtimeMessage> getLatestTweets() {
+    return realtime.subscribe([
+      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.tweetsCollectionId}.documents',
+    ]).stream;
   }
 }
