@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:twitter_clone/commons/loading.dart';
+import 'package:twitter_clone/constants/assets_constants.dart';
 import 'package:twitter_clone/core/utils.dart';
 import 'package:twitter_clone/features/auth/controller/auth_controller.dart';
 import 'package:twitter_clone/features/tweet/widget/image_carousel.dart';
+import 'package:twitter_clone/features/tweet/widget/tweet_actions_buttons.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 import 'package:twitter_clone/theme/pallete.dart';
 
@@ -45,21 +48,54 @@ class TweetCard extends ConsumerWidget {
                               ),
                             ],
                           ),
+                          // Tweet display
                           highlightLinksAndHashtags(tweet.tweet),
-                          // Text(
-                          //   tweet.tweet,
-                          //   style: TextStyle(color: Colors.white, fontSize: 14),
-                          // ),
+                          // Display tweet images
                           if (tweet.images.isNotEmpty)
                             ImageCarousel(imageLinks: tweet.images),
-                          const SizedBox(height: 10),
+
+                          // Tweets icon buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              // Views
+                              TweetActionsButtons(
+                                onTab: () {},
+                                value: 0,
+                                assetName: AssetsConstants.viewsIcon,
+                              ),
+                              // Comments
+                              TweetActionsButtons(
+                                onTab: () {},
+                                value: 0,
+                                assetName: AssetsConstants.commentIcon,
+                              ),
+                              // Like
+                              TweetActionsButtons(
+                                onTab: () {},
+                                value: 0,
+                                assetName: AssetsConstants.likeOutlinedIcon,
+                              ),
+                              // Re-tweet
+                              IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset(
+                                  AssetsConstants.retweetIcon,
+                                  colorFilter: ColorFilter.mode(
+                                    Pallete.greyColor,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 5),
-                // Divider(color: Pallete.greyColor, thickness: 0.1),
+                // const SizedBox(height: 5),
+                Divider(color: Pallete.greyColor, thickness: 0.1),
               ],
             );
           },
