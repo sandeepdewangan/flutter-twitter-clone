@@ -24,6 +24,20 @@ final currentUserAccountProvider = FutureProvider((ref) {
   return authController.getCurrentUser();
 });
 
+final currentUserDetailsProvider = FutureProvider((ref) {
+  final currentUserId = ref.watch(currentUserAccountProvider).value!.$id;
+  print(currentUserId);
+  final userDetails = ref.watch(userDetailsProvider(currentUserId));
+  return userDetails.value;
+});
+
+// Future provider for getting user data
+// We will pass the uid from the UI
+final userDetailsProvider = FutureProvider.family((ref, String uid) {
+  final authController = ref.watch(authControllerProvider.notifier);
+  return authController.getUserData(uid);
+});
+
 class AuthController extends StateNotifier<bool> {
   final AuthAPI authAPI;
   final UserAPI userAPI;
@@ -86,5 +100,13 @@ class AuthController extends StateNotifier<bool> {
       (failure) => showSnackbar(context, failure.message),
       (user) => Navigator.push(context, HomeView.route()),
     );
+  }
+
+  // --------- Get User Data ---------
+
+  Future<UserModel> getUserData(String uid) async {
+    final document = await userAPI.getUserData(uid);
+    final userData = UserModel.fromMap(document.data);
+    return userData;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:twitter_clone/constants/constants.dart';
@@ -16,7 +17,6 @@ class UserAPI {
   UserAPI({required this.db});
 
   // Save User Data to DB
-
   Future<Either<Failure, void>> saveUserData(UserModel userModel) async {
     try {
       await db.createDocument(
@@ -37,5 +37,15 @@ class UserAPI {
     } catch (e, stackTrace) {
       return left(Failure(e.toString(), stackTrace));
     }
+  }
+
+  // Get the User data based on user ID
+  Future<Document> getUserData(String uid) {
+    // We are not wrapping this with try and catch bez the future provider will take care.
+    return db.getDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.usersCollectionId,
+      documentId: uid,
+    );
   }
 }
