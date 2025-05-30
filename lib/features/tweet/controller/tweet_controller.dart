@@ -102,7 +102,7 @@ class TweetController extends StateNotifier<bool> {
     return tweets.map((tweet) => TweetModel.fromMap(tweet.data)).toList();
   }
 
-  likeTweet(TweetModel tweet, UserModel user) async {
+  void likeTweet(TweetModel tweet, UserModel user) async {
     List<String> likes = tweet.likes;
     // If already liked by the user, then remove
     if (tweet.likes.contains(user.uid)) {
